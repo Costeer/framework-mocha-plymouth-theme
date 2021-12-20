@@ -14,3 +14,10 @@ To set the theme, execute this command:
 ```
 sudo plymouth-set-default-theme framework -R
 ```
+
+## Distro Logo
+
+If you want to add your distro logo to the boot animation screen, insert it as `watermark.png`
+
+You should be able to reuse your distro's watermark image from one of your existing themes. Fedora image included for reference; just rename `fedora_watermark.png` to `watermark.png` and move it into the `framework` folder.
+
