@@ -1,6 +1,6 @@
 [Plymouth Theme]
 Name=Framework
-Description=Theme with animated Framework logo.
+Description=Theme with animated Framework logo in the Catppuccin Mocha color scheme.
 ModuleName=two-step
 
 [two-step]
