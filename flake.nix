@@ -16,7 +16,7 @@
 
       mkFrameworkTheme =
         pkgs:
-        pkgs.stdenv.mkDerivation {
+        pkgs.stdenv.mkDerivation rec {
           pname = "framework-mocha-plymouth-theme";
           version = "0.1.0";
 
@@ -30,6 +30,7 @@
             install -d -m 0755 $out/share/plymouth/themes/framework
             cp -r ./framework/* $out/share/plymouth/themes/framework
 
+            # Fix the path references in the plymouth configuration
             substituteInPlace $out/share/plymouth/themes/framework/framework.plymouth \
               --replace "ImageDir=/usr/share/plymouth/themes/framework" "ImageDir=$out/share/plymouth/themes/framework"
 
@@ -46,6 +47,7 @@
         };
     in
     {
+      # Package outputs for direct installation
       packages = forAllSystems (
         system:
         let
@@ -57,10 +59,12 @@
         }
       );
 
+      # Overlay for adding the package to nixpkgs
       overlays.default = final: prev: {
         framework-mocha-plymouth-theme = mkFrameworkTheme final;
       };
 
+      # NixOS module for easy integration
       nixosModules.default =
         {
           config,
@@ -84,6 +88,13 @@
               themePackages = [ (mkFrameworkTheme pkgs) ];
             };
           };
+        };
+
+      # Alternative NixOS module that just provides the theme without enabling it
+      nixosModules.theme =
+        { pkgs, ... }:
+        {
+          boot.plymouth.themePackages = [ (mkFrameworkTheme pkgs) ];
         };
     };
 }
