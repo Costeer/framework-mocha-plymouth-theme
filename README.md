@@ -1,23 +1,50 @@
 # Framework Plymouth Theme
 
-Theme with animated Framework logo. Inspiration from [KDE Splashscreen](https://github.com/NL-TCH/Frame.Work_SplashScreen-KDE).
+Catppuccin Mocha variant of [James Kupke's Framework plymouth theme](https://git.sr.ht/~jameskupke/framework-plymouth-theme)
 
 Artwork credit to sniss https://community.frame.work/t/framework-fan-art/6626/39
 
 ## Installation
 
-Copy the `framework` folder to your Plymouth theme folder (in Fedora, it's `/usr/share/plymouth/themes/`).
+```nix
+# configuration.nix
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+    initrd.systemd.enable = true;
+    kernelParams = [ "quiet" ];
 
-To see if it's in the right spot, you can run `plymouth-set-default-theme -l`
-
-To set the theme, execute this command:
+    plymouth = {
+      enable = true;
+      theme = "framework";
+    };
+  };
 ```
-sudo plymouth-set-default-theme framework -R
+
+```nix
+# flake.nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    framework-plymouth.url = "github:Costeer/framework-mocha-plymouth-theme";
+  };
+
+  outputs = {
+    self,
+    nixpkgs,
+    framework-plymouth,
+    ...
+  }: {
+    nixosConfigurations.yourhostname = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        framework-plymouth.nixosModules.default
+
+      ];
+    };
+  };
+}
 ```
-
-## Distro Logo
-
-If you want to add your distro logo to the boot animation screen, insert it as `watermark.png`
-
-You should be able to reuse your distro's watermark image from one of your existing themes. Fedora image included for reference; just rename `fedora_watermark.png` to `watermark.png` and move it into the `framework` folder.
-
